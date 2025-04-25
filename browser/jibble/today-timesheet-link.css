@@ -1,0 +1,26 @@
+:root {
+	--theme-color-orange: #FF7922;
+}
+
+.custom-section {
+	position: fixed;
+	z-index: 2001;
+}
+
+.custom-a {
+	background: none;
+	opacity: 0.8;
+}
+
+.custom-a:hover {
+	opacity: 1;
+}
+
+.custom-button {
+	color: white;
+	background: var(--theme-color-orange);
+	border: none;
+	padding: 0.4em 0.8em;
+	border-radius: 0 0 0.4em 0em;
+	cursor: pointer;
+}
