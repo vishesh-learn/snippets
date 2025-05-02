@@ -58,7 +58,9 @@ async function openConfirmation_toDeleteListItem(event, deleteItem) {
         });
 
         if (confirmationResult != "yes") {
-            throw "action canceled by user";
+            console.log("action canceled by user");
+            
+            return false;
         }
 
         await deleteItem(event.context.itemId);
