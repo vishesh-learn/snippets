@@ -40,7 +40,7 @@ async function openEditor_toEditListItem(event) {
     }
 }
 
-async function openConfirmation_toDeleteListItem(event, deleteItem) {
+async function openConfirmation_toDeleteListItem(event) {
     try {
         if (!event?.context?.itemId) {
             throw "no context itemId";
@@ -63,7 +63,7 @@ async function openConfirmation_toDeleteListItem(event, deleteItem) {
             return false;
         }
 
-        await deleteItem(event.context.itemId);
+        await wixData.remove("CollectionName", event.context.itemId);
 
         await $w('#datasetId').refresh();
 
