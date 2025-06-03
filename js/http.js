@@ -9,6 +9,10 @@ let options = {
 
 fetch(API_URL, options)
     .then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        
         if (res.headers.get('content-type').includes('application/json')) {
             return res.json();
         } else {
