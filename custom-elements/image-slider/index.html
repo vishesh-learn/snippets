@@ -9,12 +9,13 @@
         body {
             margin: 0;
             background: #000000;
+            height: 100vh;
         }
 
         auto-image-slider {
             display: block;
             width: 100%;
-            height: auto;
+            height: 100%;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
@@ -237,14 +238,6 @@
 
         // Register the custom element
         customElements.define('auto-image-slider', AutoImageSlider);
-
-        // Add hover pause functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('auto-image-slider').forEach(slider => {
-                slider.addEventListener('mouseenter', () => slider.pause());
-                slider.addEventListener('mouseleave', () => slider.play());
-            });
-        });
     </script>
 </body>
 
