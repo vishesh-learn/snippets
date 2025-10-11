@@ -1,5 +1,10 @@
 class FormField {
-    constructor(objKey, elementId, valueType, options_promise) {
+    constructor(
+        elementId,
+        objKey,
+        valueType,
+        options_promise
+    ) {
         this.objKey = objKey;
         this.elementId = elementId;
         this.valueType = valueType;
@@ -121,3 +126,95 @@ const sample_formFields = [
         $w('#choiceIdsInput')
     ))
 ];
+
+// ------------------------------------------------ //
+
+export class FormField {
+    constructor({
+        elementId,
+        objKey,
+        errorElementId,
+        messages = {
+            required: "This field is required.",
+            invalid: "Invalid input.",
+        }
+    }) {
+        this.elementId = elementId;
+        this.objKey = objKey;
+        this.errorElementId = errorElementId;
+
+        this.messages = messages;
+
+        this.isDirty = false;
+
+        this.init = this.init.bind(this);
+        this.onInput_orChange = this.onInput_orChange.bind(this);
+        this.showError = this.showError.bind(this);
+    }
+
+    get element() {
+        return this.elementId ? $w(`#${this.elementId}`) : null;
+    }
+
+    get errorElement() {
+        return this.errorElementId ? $w(`#${this.errorElementId}`) : null;
+    }
+
+    init(form_change_callback = () => { }) {
+        if (this?.element?.onInput) {
+            this.element.onInput(() => {
+                this.onInput_orChange();
+
+                form_change_callback();
+            });
+        }
+
+        if (this?.element?.onBlur) {
+            this.element.onBlur(() => {
+                this.isDirty = true;
+
+                this.onInput_orChange();
+
+                form_change_callback();
+            });
+        }
+
+        if (this?.element?.onChange) {
+            this.element.onChange(() => {
+                this.isDirty = true;
+
+                this.onInput_orChange();
+
+                form_change_callback();
+            });
+        }
+    }
+
+    onInput_orChange() {
+        console.log('onInput_orChange called for', this);
+
+        if (this.element.valid) {
+            this.errorElement.collapse();
+        } else if (this.isDirty) {
+            this.showError();
+        }
+    }
+
+    showError() {
+        console.log('showError called for', this);
+
+        const message = this.element.validationMessage;
+
+        if (message === "value missing") {
+            this.errorElement.text = this.messages.required;
+        } else if (message === "type mismatch" || message === "pattern mismatch") {
+            this.errorElement.text = this.messages.invalid;
+        } else {
+            this.errorElement.text = message || this.messages.invalid;
+        }
+
+        this.errorElement.expand();
+
+        this.isDirty = true;
+    }
+}
