@@ -160,7 +160,7 @@ export class FormField {
         return this.errorElementId ? $w(`#${this.errorElementId}`) : null;
     }
 
-    init(form_change_callback = () => { }) {
+    init(form_change_callback = () => {}) {
         if (this?.element?.onInput) {
             this.element.onInput(() => {
                 this.onInput_orChange();
@@ -191,8 +191,6 @@ export class FormField {
     }
 
     onInput_orChange() {
-        console.log('onInput_orChange called for', this);
-
         if (this.element.valid) {
             this.errorElement.collapse();
         } else if (this.isDirty) {
@@ -201,8 +199,6 @@ export class FormField {
     }
 
     showError() {
-        console.log('showError called for', this);
-
         const message = this.element.validationMessage;
 
         if (message === "value missing") {
@@ -216,5 +212,54 @@ export class FormField {
         this.errorElement.expand();
 
         this.isDirty = true;
+    }
+}
+
+export class CustomCheckbox {
+    constructor(checkmarkElementId, required = false, triggerElementId) {
+        this.checkmarkElementId = checkmarkElementId;
+        this.required = required;
+        this.triggerElementId = triggerElementId;
+
+        this.init = this.init.bind(this);
+        this.toggle = this.toggle.bind(this);
+        this.check = this.check.bind(this);
+        this.unCheck = this.unCheck.bind(this);
+    }
+
+    get checkmarkElement() {
+        return this.checkmarkElementId ? $w(`#${this.checkmarkElementId}`) : null;
+    }
+
+    get triggerElement() {
+        return this.triggerElementId ? $w(`#${this.triggerElementId}`) : null;
+    }
+
+    get checked() {
+        return !this.checkmarkElement.hidden;
+    }
+
+    get valid() {
+        return !this.required || this.checked;
+    }
+
+    init() {
+        this.triggerElement.onClick(this.toggle);
+    }
+
+    toggle() {
+        if (this.checked) {
+            this.unCheck();
+        } else {
+            this.check();
+        }
+    }
+
+    check() {
+        return this.checkmarkElement.show();
+    }
+
+    unCheck() {
+        return this.checkmarkElement.hide();
     }
 }
