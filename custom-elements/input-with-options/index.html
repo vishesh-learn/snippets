@@ -1,51 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        :host { display: inline-block; font-family: inherit; }
-            label { display: block; margin-bottom: 4px; }
-            .wrapper { position: relative; min-width: 220px; }
-            input { width: 100%; box-sizing: border-box; }
-            .options-list {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                margin: 4px 0 0;
-                padding: 0;
-                list-style: none;
-                max-height: 240px;
-                overflow-y: auto;
-                display: none;
-                z-index: 10;
-                background: white;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            }
-            .options-list.open { display: block; }
-            .options-list li {
-                padding: 10px 12px;
-                cursor: pointer;
-            }
-            .options-list li:hover,
-            .options-list li.active {
-                background: #f0f5ff;
-            }
+        :host {
+            display: block;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        input-with-options label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 19px;
+            font-family: 'nimbus-sans-tw01con', sans-serif;
+            color: rgb(17, 64, 138);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        input-with-options .wrapper {
+            position: relative;
+            min-width: 220px;
+        }
+
+        input-with-options input {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: rgb(170, 226, 250);
+            min-height: 39px;
+            border-width: 0;
+            border-radius: 5px;
+
+            padding-inline: 18px;
+            font-family: 'nimbus-sans-tw01con', sans-serif;
+        }
+
+        input-with-options input:focus-visible, input-with-options input:hover, input-with-options input:focus {
+            background-color: rgb(103, 169, 206);
+        }
+
+        input-with-options input:focus-visible, input-with-options input:focus {
+            outline-style: solid;
+            outline-color: rgb(3, 105, 165);
+            outline-width: 2px;
+        }
+
+        input-with-options input,
+        input-with-options .options-list {
+            font-size: 20px;
+        }
+
+        input-with-options .options-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin: 4px 0 0;
+            padding: 0;
+            list-style: none;
+            max-height: 240px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        input-with-options .options-list.open:has(li) {
+            display: block;
+        }
+
+        input-with-options .options-list li {
+            padding: 10px 12px;
+            cursor: pointer;
+
+            font-family: "open sans", sans-serif;
+            font-size: 15px;
+            color: rgb(4, 73, 133);
+        }
+
+        input-with-options .options-list li:hover,
+        input-with-options .options-list li.active {
+            background: rgb(224, 254, 255);
+        }
     </style>
 
     <title>Input With Options</title>
 </head>
+
 <body>
-    <input-with-options
-        label="Yacht Name"
-        placeholder=""
-        options='["Power Yachts","Catamarans","Mono-Hulls","Mono-hulls & Catamarans","Power Catamarans (No Sails)","Motor Sailers"]'>
+    <input-with-options label="Yacht Name" placeholder=""
+        options='["abc", "def"]'>
     </input-with-options>
 
     <script src="input-with-options.js"></script>
 </body>
+
 </html>

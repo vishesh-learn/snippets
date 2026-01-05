@@ -38,14 +38,7 @@ class InputWithOptions extends HTMLElement {
     }
 
     parseOptions() {
-        const defaultOptions = [
-            "Power Yachts",
-            "Catamarans",
-            "Mono-Hulls",
-            "Mono-hulls & Catamarans",
-            "Power Catamarans (No Sails)",
-            "Motor Sailers"
-        ];
+        const defaultOptions = [];
 
         const attr = this.getAttribute('options');
         if (!attr) return defaultOptions;
@@ -65,7 +58,7 @@ class InputWithOptions extends HTMLElement {
 
     render() {
         this.options = this.parseOptions();
-        const labelText = this.getAttribute('label') || 'Type';
+        const labelText = this.getAttribute('label');
         const placeholder = this.getAttribute('placeholder') || '';
 
         if (!this.initialized) {
@@ -74,9 +67,14 @@ class InputWithOptions extends HTMLElement {
             const wrapper = document.createElement('div');
             wrapper.className = 'wrapper';
 
-            const labelEl = document.createElement('label');
-            labelEl.setAttribute('for', this.inputId);
-            labelEl.textContent = labelText;
+            if (labelText) {
+                const labelEl = document.createElement('label');
+                labelEl.setAttribute('for', this.inputId);
+                labelEl.textContent = labelText;
+
+                this.labelEl = labelEl;
+                wrapper.append(labelEl);
+            }
 
             const input = document.createElement('input');
             input.id = this.inputId;
@@ -87,7 +85,6 @@ class InputWithOptions extends HTMLElement {
             list.id = this.listId;
             list.className = 'options-list';
 
-            this.labelEl = labelEl;
             this.inputEl = input;
             this.listEl = list;
             this.wrapperEl = wrapper;
@@ -95,7 +92,7 @@ class InputWithOptions extends HTMLElement {
             this.renderOptions(this.options);
             this.bindEvents();
 
-            wrapper.append(labelEl, input, list);
+            wrapper.append(input, list);
             this.append(wrapper);
             this.initialized = true;
         } else {
@@ -108,6 +105,11 @@ class InputWithOptions extends HTMLElement {
 
             // Restore input value after rerendering options.
             this.inputEl.value = currentValue;
+
+            this.dispatchEvent(new CustomEvent('input-change', {
+                detail: this.inputEl.value,
+                bubbles: true
+            }));
         }
     }
 
@@ -156,7 +158,14 @@ class InputWithOptions extends HTMLElement {
         this.listEl.addEventListener('click', (event) => {
             const target = event.target;
             if (target.tagName.toLowerCase() === 'li') {
+
                 this.inputEl.value = target.dataset.value || target.textContent;
+
+                this.dispatchEvent(new CustomEvent('input-change', {
+                    detail: this.inputEl.value,
+                    bubbles: true
+                }));
+
                 this.closeList();
                 this.inputEl.focus();
             }
