@@ -1,0 +1,30 @@
+<audio id="a" controls></audio>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+  const url = "https://hagah-demo.s3.us-east-1.amazonaws.com/hls/master.m3u8?response-content-disposition=inline&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIAvgdlnEOlRilwMtmESe5V%2Bv0vWv4VMVzaAR%2FBsldYhRAiEAltHzqIztxqEAh%2F5zz2E6xPBkyM%2FQ4EKxqiuFpNURojYquQMIZxAAGgwxMTU5MDcwNjYwNTgiDCeMVYXUczpwUABCmCqWA98XlaKo1AsY7Mb4%2FMuMRSVJ9viY%2Ft4aXJVV1SDuHM%2BJXLgjlkG5x0aO0LnVZpR8BcuB9nomG%2FRSnI3B3nSGAvqu8%2FJLpIq01tonu00pwliMaZFOAwfWrYp5oq7RL2pxWC%2Bc3JUqfIFRCQpfJ0bNo1dYo9kfzQpdqKY4alxtwFg6EWge%2FsQ0ZaXv2eVEBzWpsX1G25l%2BBG44Ts9tYlDyGZh%2FcZLrO5a8R0Mtkx3CKtFSyxaAVyRs34zMB24jHYTYAJETfLi5VV8QdioVWWr5qSF9XqGV8ZZrWw7AS8Iy5%2FjZWDEzLfmfKRzzeWFqOVVPX1aZLx0Xn1DAq4AugvUzVBxVXjVBAgCB3KMdQ5Zt30Egy3CTlGP5lE0imYNLTS4AVS7MBm4Z7wP6pR3mWajaQ42jYHzvDUsB%2BesRzWGjUni1PQogBemg8SbyYH9ahd8DalZ06ZKL9I4dnSM8p154ENsmD%2FmyJYY40l5kxpVKA2oHIyNhVWR%2Bgcfsx50NsZ99HmaLW8rAUZ8yOXLpCBnhwJFIQdYy0w0w9LHmywY63gIj0ta7IwTsvQDSFr8eOb%2FwP3Z8LZdv3DQrMOfpPvYBfbZOCo2ohk7iQ1OjkocMvRv6lejhkHEzbt8KRsCtMybayXuH0bXr8L9wZVU0rG1%2Fh1fRTYTVREkYhFSXs3n8o%2BWR55PsDTi1aLlUki4C5wNWgXe%2BYxkWQ89CLq%2FMvB3ao8uChFdZQNxzKE0dN9tyUnpkiGBTDw2v8fU5xHPyyxEJIuWMScBSkCGFFWR%2FRezyh%2Fbmx%2B11UdUmZppEe8uJtUWnvGme1awA3kvSOsL%2BfmRfooRrgWkC1uMqer8DoxC%2FGA2xnTPYWr4kjbb%2BmmRdxePmCGg4MC%2FNgmfTkhvsFEJssYxTgeI8nOi5m%2Fg0LynNqo4gAmsJdGH%2FRdplnnbd5QrDx9sPkk%2B7Yvhwy1aEIFBfEGSlTPTARZc6yMtcZVpFWUd%2FjPEPHaVvGeEt9dEQtNUCpfAjH%2B7rO95hr84fTw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARV7EZPDFPCAXLH4D%2F20260128%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260128T053306Z&X-Amz-Expires=28800&X-Amz-SignedHeaders=host&X-Amz-Signature=83f087b02ec50bc44d3f991c939a24b0ce1a677fc20ec969a8b7c26ba1e47194";
+  const audio = document.getElementById("a");
+
+  const hls = new Hls();            // ABR on by default
+  hls.loadSource(url);
+  hls.attachMedia(audio);
+
+  function logCurrent() {
+    const lvl = hls.currentLevel;   // selected variant index
+    if (lvl >= 0) {
+      const bps = hls.levels[lvl].bitrate; // bits/sec (from BANDWIDTH)
+      console.log("Playing level:", lvl, "bitrate:", Math.round(bps/1000), "kbps");
+    }
+    // Bandwidth estimate (network condition) if available:
+    const est = hls.bandwidthEstimate ?? hls.abrController?.bwEstimator?.getEstimate?.();
+    if (est) console.log("Estimated bandwidth:", Math.round(est/1000), "kbps");
+  }
+
+  // Fires when ABR switches variant
+  hls.on(Hls.Events.LEVEL_SWITCHED, (e, data) => {
+    const bps = hls.levels[data.level].bitrate;
+    console.log("ABR switched ->", Math.round(bps/1000), "kbps");
+  });
+
+  // Call periodically (optional)
+  setInterval(logCurrent, 2000);
+</script>
